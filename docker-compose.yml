@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  db:
+    image: postgres
+    container_name: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=matcha
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+  
+  web:
+    build: .
+    container_name: web
+    command: npm run dev
+    restart: on-failure
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+volumes:
+  postgres_data:
